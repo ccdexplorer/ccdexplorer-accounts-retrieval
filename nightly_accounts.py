@@ -243,7 +243,7 @@ class Daily:
             )
             remote = self.repo.create_remote(
                 remote,
-                url=f"https://ceupdaterbot:{TOKEN}@github.com/ccdexplorer/ccdexplorer-accounts",
+                url=f"https://ceupdaterbot:{CE_BOT_TOKEN}@github.com/ccdexplorer/ccdexplorer-accounts",
             )
             console.log(self.date, "Remote bot_remote created...")
         try:
