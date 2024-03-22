@@ -279,7 +279,7 @@ if __name__ == "__main__":
                 "remote",
                 "add",
                 "bot_remote",
-                f"https://ceupdaterbot:{TOKEN}@github.com/ccdexplorer/ccdexplorer-accounts",
+                f"https://ceupdaterbot:{CE_BOT_TOKEN}@github.com/ccdexplorer/ccdexplorer-accounts",
             ],
             stdout=subprocess.PIPE,
         )
