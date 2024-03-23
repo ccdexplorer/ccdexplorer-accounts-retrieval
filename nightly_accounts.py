@@ -134,6 +134,8 @@ class Daily:
         if self.processed_accounts == {}:
             results = []
             for index, account in enumerate(self.accounts):
+                if (index % 10_000) == 0:
+                    console.log(f"Working on account_index {index:,.0f}...")
                 results.append(self._perform_account_action(account))
             self.processed_accounts = results
 
@@ -219,10 +221,7 @@ class Daily:
                 {"account": {"$exists": True}}
             )
             self.mongodb.mainnet[Collections.nightly_accounts].insert_many(all_records)
-            query = {"_id": "last_known_nightly_accounts"}
-            self.mongodb.mainnet[Collections.helpers].replace_one(
-                query, {"date": self.date}, upsert=True
-            )
+
             self.tooter.send(
                 channel=TooterChannel.NOTIFIER,
                 message=f"Accounts Retrieval: Nightly accounts saved to MongoDB for {self.date}.",
@@ -252,6 +251,10 @@ class Daily:
             origin = self.repo.remote(name=remote)
 
             origin.push(force_with_lease=True)
+            query = {"_id": "last_known_nightly_accounts"}
+            self.mongodb.mainnet[Collections.helpers].replace_one(
+                query, {"date": self.date}, upsert=True
+            )
         except Exception as e:
             print(f"Some error occured while pushing the code: {e}")
 
