@@ -232,7 +232,7 @@ class Daily:
 
     def git_push(self):
         console.log(self.date, "Git add, commit, push...")
-        remote = "origin"
+        remote = "bot_remote"
         try:
             console.log(self.date, f"{self.repo.remote(name=remote).exists()=}")
         except Exception as e:

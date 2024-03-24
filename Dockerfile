@@ -17,6 +17,6 @@ COPY . .
 RUN git clone https://github.com/ccdexplorer/ccdexplorer-accounts.git /home/git_dir
 RUN git config --global user.name "ceupdaterbot"
 RUN git config --global user.email "bot@ccdexplorer.io"
-RUN git config --global url.https://ceupdaterbot:{CE_BOT_TOKEN}@github.com/.insteadOf https://github.com/
+# RUN git config --global url.https://ceupdaterbot:{CE_BOT_TOKEN}@github.com/.insteadOf https://github.com/
 
 CMD ["python3", "/home/code/nightly_accounts.py"]
