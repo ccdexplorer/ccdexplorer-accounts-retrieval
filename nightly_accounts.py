@@ -129,6 +129,25 @@ class Daily:
             x["address"]
             for x in self.mongodb.mainnet[Collections.transactions].aggregate(pipeline)
         ]
+        # as genesis accounts do not have an account_creation transaction,
+        # we need to add them manually.
+        genesis_accounts = [
+            "3XSLuJcXg6xEua6iBPnWacc3iWh93yEDMCqX8FbE3RDSbEnT9P",
+            "32jTsKCtpGKr56WLweiPJB6jvLoCgFAHvfXtexHeoovJWu2PBD",
+            "49SJ6R6T9zo1C5cLVyxbwAuZC3EcDB9a78vSQYm3ZLA2y2eojM",
+            "3eUA4NnWufEqTBXR2QtTwjPxHZRGZvoqHaVjybmzZSqbuG32vJ",
+            "38T2PSXK6JVqNmoGqzjtnYsyb76uuNYKSpEoA8vPdtmRmpZhAv",
+            "4LH62AZmugKXFA2xXZhpoNbt2fFhAn8182kdHgxCu8cyiZGo2c",
+            "47xTHwtFra1d4Mq4DYZuZYJEYrDXY34C4CGkTTzT6eiwjEczuT",
+            "4CqVcmNi9F5V53YdJZ9U5sLaqaWt7Uxrf8VYk5WCLDYwbLL62Y",
+            "4d13WVDNKVGDUxRUb1PRQAJyTwWSVcjWS7uwZ1oqmDm5icQEPT",
+            "3CbvrNVpcHpL7tyT2mhXxQwNWHiPNYEJRgp3CMgEcMyXivms6B",
+            "4MPJybKC9Kz7kw9KNyLHhuAEt4ZTxLsd3DBDbxtKdUiv4fXqVN",
+            "3ofwYFAkgV59BsHqzmiWyRmmKRB5ZzrPfbmx5nup24cE53jNX5",
+            "44bxoGippBqpgseaiYPFnYgi5J5q58bQKfpQFeGbY9DHmDPD78",
+            "3EctbG8WaQkTqZb1NTJPAFnqmuhvW62pQbywvqb9VeyqaFZdzN",
+        ]
+        result.extend(genesis_accounts)
         self.accounts = result
 
     def get_accounts_for_day(self):
