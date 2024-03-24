@@ -92,6 +92,7 @@ class Daily:
         self,
         date: str,
         block_hash: str,
+        block_height: int,
         grpcclient: GRPCClient,
         repo: Repo,
         new_dir: str,
@@ -101,14 +102,34 @@ class Daily:
         self.date = date
         self.new_dir = new_dir
         self.block_hash = block_hash
+        self.block_height = block_height
         self.grpcclient: GRPCClient = grpcclient
         self.repo = repo
         self.mongodb = mongodb
         self.tooter = tooter
-        self.get_accounts_for_day()
+        # self.get_accounts_for_day()
+        self.get_accounts_for_day_from_blocks_collection()
         self.retrieve_account_info_for_day_on_server()
         self.save_accounts_for_day()
         self.git_push()
+
+    def get_accounts_for_day_from_blocks_collection(self):
+        console.log(self.date, "Get accounts from blocks collection...")
+        pipeline = [
+            {
+                "$match": {
+                    "account_creation": {"$exists": True},
+                    "block_info.height": {"$lte": self.block_height},
+                }
+            },
+            {"$project": {"_id": 0, "address": "$account_creation.address"}},
+        ]
+
+        result = [
+            x["address"]
+            for x in self.mongodb.mainnet[Collections.transactions].aggregate(pipeline)
+        ]
+        self.accounts = result
 
     def get_accounts_for_day(self):
         console.log(self.date, "Get accounts...")
@@ -314,6 +335,7 @@ if __name__ == "__main__":
         if len(result) == 1:
             last_date_known = result[0]["date"]
             last_hash_for_day = result[0]["hash_for_last_block"]
+            last_height_for_day = result[0]["height_for_last_block"]
 
         result = mongodb.mainnet[Collections.helpers].find_one(
             {"_id": "last_known_nightly_accounts"}
@@ -325,6 +347,7 @@ if __name__ == "__main__":
             Daily(
                 last_date_known,
                 last_hash_for_day,
+                last_height_for_day,
                 grpcclient,
                 repo_new,
                 new_dir,
