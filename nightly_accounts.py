@@ -161,7 +161,7 @@ class Daily:
             self.processed_accounts = pickle_contents
             f.close()
         except Exception as _:
-            print("No pickle found for this day.")
+            console.log("No pickle found for this day.")
             self.processed_accounts = {}
 
     def retrieve_account_info_for_day_on_server(self):
@@ -273,27 +273,32 @@ class Daily:
     def git_push(self):
         console.log(self.date, "Git add, commit, push...")
         remote = "origin"
-        try:
-            console.log(self.date, f"{self.repo.remote(name=remote).exists()=}")
-        except Exception as e:
-            console.log(
-                self.date,
-                f"{e}: Remote bot_remote doesn't exist, trying to create and push...",
-            )
-            remote = self.repo.create_remote(
-                remote,
-                url=f"https://ceupdaterbot:{CE_BOT_TOKEN}@github.com/ccdexplorer/ccdexplorer-accounts",
-            )
-            console.log(self.date, "Remote bot_remote created...")
+        # try:
+        #     console.log(self.date, f"{self.repo.remote(name=remote).exists()=}")
+        # except Exception as e:
+        #     console.log(
+        #         self.date,
+        #         f"{e}: Remote bot_remote doesn't exist, trying to create and push...",
+        #     )
+        #     remote = self.repo.create_remote(
+        #         remote,
+        #         url=f"https://ceupdaterbot:{CE_BOT_TOKEN}@github.com/ccdexplorer/ccdexplorer-accounts",
+        #     )
+        #     console.log(self.date, "Remote bot_remote created...")
         try:
             self.repo.git.add("-A")
             self.repo.index.commit(self.date)
             origin = self.repo.remote(name=remote)
 
-            origin.push(force_with_lease=True)
+            origin.push()
             query = {"_id": "last_known_nightly_accounts"}
             self.mongodb.mainnet[Collections.helpers].replace_one(
                 query, {"date": self.date}, upsert=True
+            )
+            self.tooter.send(
+                channel=TooterChannel.NOTIFIER,
+                message=f"Accounts Retrieval: Nightly accounts pushed and helper updated for {self.date}.",
+                notifier_type=TooterType.INFO,
             )
         except Exception as e:
             print(f"Some error occured while pushing the code: {e}")
@@ -314,18 +319,18 @@ if __name__ == "__main__":
 
     if ON_SERVER:
         new_dir = "/home/git_dir"
-        result = subprocess.run(
-            [
-                "git",
-                "-C",
-                "/home/git_dir",
-                "remote",
-                "add",
-                "bot_remote",
-                f"https://ceupdaterbot:{CE_BOT_TOKEN}@github.com/ccdexplorer/ccdexplorer-accounts",
-            ],
-            stdout=subprocess.PIPE,
-        )
+        # result = subprocess.run(
+        #     [
+        #         "git",
+        #         "-C",
+        #         "/home/git_dir",
+        #         "remote",
+        #         "add",
+        #         "bot_remote",
+        #         f"https://ceupdaterbot:{CE_BOT_TOKEN}@github.com/ccdexplorer/ccdexplorer-accounts",
+        #     ],
+        #     stdout=subprocess.PIPE,
+        # )
         result = subprocess.run(
             [
                 "git",
@@ -338,7 +343,7 @@ if __name__ == "__main__":
         )
         console.log(
             "xxxx-xx-xx",
-            f"Result of adding repo (statistics) through subprocess: {repo_new.remote(name='bot_remote').exists()=}",
+            f"Result of adding repo (statistics) through subprocess: {repo_new.remote(name='origin').exists()=}",
         )
 
     origin = repo_new.remote(name="origin")
