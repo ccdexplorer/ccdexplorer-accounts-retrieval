@@ -1,23 +1,24 @@
-# ruff: noqa: F403, F405, E402, E501, F401
-
 from __future__ import annotations
-from rich import print
-from git import Repo
-import pandas as pd
-from env import *
+
+import datetime as dt
 import pickle
 import subprocess
-from ccdexplorer_fundamentals.GRPCClient.CCD_Types import CCD_AccountInfo
-from ccdexplorer_fundamentals.GRPCClient import GRPCClient
-from rich.console import Console
 import time
-import datetime as dt
-from ccdexplorer_fundamentals.tooter import Tooter, TooterChannel, TooterType
+
+import pandas as pd
+from ccdexplorer_fundamentals.GRPCClient import GRPCClient
+from ccdexplorer_fundamentals.GRPCClient.CCD_Types import CCD_AccountInfo
 from ccdexplorer_fundamentals.mongodb import (
-    MongoDB,
     Collections,
+    MongoDB,
     MongoMotor,
 )
+from ccdexplorer_fundamentals.tooter import Tooter, TooterChannel, TooterType
+from git import Repo
+from rich import print
+from rich.console import Console
+
+from env import ON_SERVER
 
 console = Console()
 
