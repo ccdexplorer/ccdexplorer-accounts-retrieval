@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime as dt
 import pickle
 import subprocess
-
+import time
 import pandas as pd
 from ccdexplorer_fundamentals.GRPCClient import GRPCClient
 from ccdexplorer_fundamentals.GRPCClient.CCD_Types import CCD_AccountInfo
@@ -335,55 +335,55 @@ if __name__ == "__main__":
         )
 
     origin = repo_new.remote(name="origin")
-    # origin.pull()
+    origin.pull()
 
-    # while True:
-    #     last_date_known = None
-    #     last_date_processed = None
-    #     last_hash_for_day = None
+    while True:
+        last_date_known = None
+        last_date_processed = None
+        last_hash_for_day = None
 
-    #     pipeline = [{"$sort": {"height_for_last_block": -1}}, {"$limit": 1}]
-    #     result = list(mongodb.mainnet[Collections.blocks_per_day].aggregate(pipeline))
-    #     if len(result) == 1:
-    #         last_date_known = result[0]["date"]
-    #         last_hash_for_day = result[0]["hash_for_last_block"]
-    #         last_height_for_day = result[0]["height_for_last_block"]
+        pipeline = [{"$sort": {"height_for_last_block": -1}}, {"$limit": 1}]
+        result = list(mongodb.mainnet[Collections.blocks_per_day].aggregate(pipeline))
+        if len(result) == 1:
+            last_date_known = result[0]["date"]
+            last_hash_for_day = result[0]["hash_for_last_block"]
+            last_height_for_day = result[0]["height_for_last_block"]
 
-    #     result = mongodb.mainnet[Collections.helpers].find_one(
-    #         {"_id": "last_known_nightly_accounts"}
-    #     )
-    #     if result:
-    #         last_date_processed = result["date"]
+        result = mongodb.mainnet[Collections.helpers].find_one(
+            {"_id": "last_known_nightly_accounts"}
+        )
+        if result:
+            last_date_processed = result["date"]
 
-    #     if last_date_known != last_date_processed:
-    #         Daily(
-    #             last_date_known,
-    #             last_hash_for_day,
-    #             last_height_for_day,
-    #             grpcclient,
-    #             repo_new,
-    #             new_dir,
-    #             mongodb,
-    #             tooter,
-    #         )
-    #     else:
-    #         console.log("Nothing to do...")
-    #     time.sleep(5 * 60)
+        if last_date_known != last_date_processed:
+            Daily(
+                last_date_known,
+                last_hash_for_day,
+                last_height_for_day,
+                grpcclient,
+                repo_new,
+                new_dir,
+                mongodb,
+                tooter,
+            )
+        else:
+            console.log("Nothing to do...")
+        time.sleep(5 * 60)
 
-    result = mongodb.mainnet[Collections.blocks_per_day].find_one(
-        {"date": "2024-05-31"}
-    )
-    last_date_known = result["date"]
-    last_hash_for_day = result["hash_for_last_block"]
-    last_height_for_day = result["height_for_last_block"]
+    # result = mongodb.mainnet[Collections.blocks_per_day].find_one(
+    #     {"date": "2024-05-31"}
+    # )
+    # last_date_known = result["date"]
+    # last_hash_for_day = result["hash_for_last_block"]
+    # last_height_for_day = result["height_for_last_block"]
 
-    Daily(
-        last_date_known,
-        last_hash_for_day,
-        last_height_for_day,
-        grpcclient,
-        repo_new,
-        new_dir,
-        mongodb,
-        tooter,
-    )
+    # Daily(
+    #     last_date_known,
+    #     last_hash_for_day,
+    #     last_height_for_day,
+    #     grpcclient,
+    #     repo_new,
+    #     new_dir,
+    #     mongodb,
+    #     tooter,
+    # )
