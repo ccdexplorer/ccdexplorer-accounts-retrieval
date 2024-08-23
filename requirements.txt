@@ -17,3 +17,4 @@ chardet
 cbor2
 pyarrow
 python-dotenv
+aiohttp
