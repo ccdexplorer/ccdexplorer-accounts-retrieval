@@ -290,7 +290,7 @@ class Daily:
             self.repo.index.commit(self.date)
             origin = self.repo.remote(name=remote)
 
-            # origin.push()
+            origin.push()
             query = {"_id": "last_known_nightly_accounts"}
             self.mongodb.mainnet[Collections.helpers].replace_one(
                 query, {"date": self.date}, upsert=True
