@@ -12,7 +12,7 @@ COPY ./requirements.txt .
 RUN pip install --user --no-cache-dir -r requirements.txt
 # Copy application files.
 COPY . .
-#
+
 # ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" skipcache
 RUN git clone https://github.com/ccdexplorer/ccdexplorer-accounts.git /home/git_dir
 RUN git config --global user.name "ceupdaterbot"
